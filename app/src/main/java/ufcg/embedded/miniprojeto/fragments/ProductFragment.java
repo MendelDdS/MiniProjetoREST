@@ -20,7 +20,6 @@ import java.lang.reflect.Type;
 import java.util.concurrent.ExecutionException;
 
 import ufcg.embedded.miniprojeto.R;
-import ufcg.embedded.miniprojeto.activities.MainActivity;
 import ufcg.embedded.miniprojeto.models.Fruit;
 import ufcg.embedded.miniprojeto.models.Shop;
 import ufcg.embedded.miniprojeto.toolbox.HttpAsyncTask;
@@ -46,7 +45,7 @@ public class ProductFragment extends Fragment {
         asyncTask = new HttpAsyncTask(this.getContext());
         try {
             outputJason = asyncTask.execute(BASE_URL + "/shop/products/").get();
-            getFruitsGson(outputJason);
+            toFruitsGson(outputJason);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -62,22 +61,17 @@ public class ProductFragment extends Fragment {
         return view;
     }
 
-    private void getFruitsGson(String text) {
+    private void toFruitsGson(String text) {
         gson = new Gson();
         String jsonOutput = text;
         Type type = new TypeToken<Shop>(){}.getType();
-
         shop = (Shop) gson.fromJson(jsonOutput, type);
-    }
-
-    public void setShop(Shop shop) {
-        this.shop = shop;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        showFruits();
+        showListFruits();
         Log.i("Script: ", "onResume");
     }
 
@@ -87,7 +81,7 @@ public class ProductFragment extends Fragment {
         Log.i("Script: ", "onDestroy");
     }
 
-    private void showFruits() {
+    private void showListFruits() {
         if (shop != null) {
             String[] frts = new String[shop.getProducts().size()];
 
@@ -100,7 +94,7 @@ public class ProductFragment extends Fragment {
         }
     }
 
-    private void getOneFruitGson(String text) {
+    private void toOneFruitGson(String text) {
         Gson gson = new Gson();
         String jsonOutput = text;
         Type type = new TypeToken<Fruit>(){}.getType();
@@ -120,7 +114,7 @@ public class ProductFragment extends Fragment {
 
         try {
             outputJason = asyncTask.execute(BASE_URL + shop.getProducts().get(position).getProduct_url()).get();
-            getOneFruitGson(outputJason);
+            toOneFruitGson(outputJason);
             fruitName.setText(fruit.getName());
             price.setText(fruit.getPrice());
         } catch (InterruptedException e) {
