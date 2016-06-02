@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MiniProjeto</string>
+    <string name="GETfruits">GET Fruits</string>
+    <string name="products">Produtos</string>
+    <string name="customers">Clientes</string>
+    <string name="categories">Categorias</string>
+</resources>
