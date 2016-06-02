@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutionException;
 import ufcg.embedded.miniprojeto.R;
 import ufcg.embedded.miniprojeto.models.Fruit;
 import ufcg.embedded.miniprojeto.models.Shop;
-import ufcg.embedded.miniprojeto.toolbox.HttpAsyncTask;
+import ufcg.embedded.miniprojeto.toolbox.HttpAsyncTaskGET;
 
 /**
  * Created by treinamento-09 on 02/06/16.
@@ -32,7 +32,7 @@ public class ProductFragment extends Fragment {
     private ListView fruitList;
     private Shop shop;
     private ArrayAdapter<String> listAdapter;
-    private HttpAsyncTask asyncTask;
+    private HttpAsyncTaskGET asyncTask;
     private String outputJason;
     private Gson gson;
     private Fruit fruit;
@@ -42,7 +42,7 @@ public class ProductFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = (ViewGroup) inflater.inflate(R.layout.product_layout, container, false);
         fruitList = (ListView) view.findViewById(R.id.fruitList);
-        asyncTask = new HttpAsyncTask(this.getContext());
+        asyncTask = new HttpAsyncTaskGET(this.getContext());
         try {
             outputJason = asyncTask.execute(BASE_URL + "/shop/products/").get();
             toFruitsGson(outputJason);
@@ -107,7 +107,7 @@ public class ProductFragment extends Fragment {
         dialog.setContentView(R.layout.fruit_dialog);
         TextView fruitName, price;
         String outputJason;
-        asyncTask = new HttpAsyncTask(this.getContext());
+        asyncTask = new HttpAsyncTaskGET(this.getContext());
 
         fruitName = (TextView) dialog.findViewById(R.id.fruitName);
         price = (TextView) dialog.findViewById(R.id.price);

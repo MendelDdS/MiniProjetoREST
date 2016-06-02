@@ -4,6 +4,12 @@
     <string name="products">Produtos</string>
     <string name="customers">Clientes</string>
     <string name="categories">Categorias</string>
+    <string name="registerCust">Registrar Cliente</string>
+
+    <string name="firstname">Primeiro Nome:</string>
+    <string name="lastname">Segundo Nome:</string>
+    <string name="finish">Finalizar</string>
+
 
     <string-array name="titles">
         <item>Produtos</item>

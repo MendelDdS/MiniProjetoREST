@@ -1,25 +1,33 @@
 package ufcg.embedded.miniprojeto.fragments;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SlidingPaneLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
+import org.w3c.dom.Text;
 
 import java.lang.reflect.Type;
 import java.util.concurrent.ExecutionException;
 
 import ufcg.embedded.miniprojeto.R;
-import ufcg.embedded.miniprojeto.activities.MainActivity;
+import ufcg.embedded.miniprojeto.models.Customer;
 import ufcg.embedded.miniprojeto.models.Shop;
-import ufcg.embedded.miniprojeto.toolbox.HttpAsyncTask;
+import ufcg.embedded.miniprojeto.toolbox.HttpAsyncTaskGET;
+import ufcg.embedded.miniprojeto.toolbox.HtttpAsyncTaskPOST;
 
 /**
  * Created by treinamento-09 on 02/06/16.
@@ -27,18 +35,23 @@ import ufcg.embedded.miniprojeto.toolbox.HttpAsyncTask;
 public class CustomerFragment extends Fragment {
     private String BASE_URL = "https://api.predic8.de";
     private ListView custList;
+    private EditText firstname, lastname;
     private Shop shop;
     private ArrayAdapter<String> listAdapter;
-    private HttpAsyncTask asyncTask;
+    private HttpAsyncTaskGET asyncTask;
+    private HtttpAsyncTaskPOST asyncTaskPOST;
     private String outputJason;
     private Gson gson;
+    private Button registerCust, finish;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = (ViewGroup) inflater.inflate(R.layout.customer_layout, container, false);
         custList = (ListView) view.findViewById(R.id.custList);
-        asyncTask = new HttpAsyncTask(this.getContext());
+        registerCust = (Button) view.findViewById(R.id.registerCust);
+
+        asyncTask = new HttpAsyncTaskGET(this.getContext());
         try {
             outputJason = asyncTask.execute(BASE_URL + "/shop/customers/").get();
             getCustomerGson(outputJason);
@@ -49,6 +62,13 @@ public class CustomerFragment extends Fragment {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
+
+        registerCust.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialogRegister();
+            }
+        });
         return view;
     }
 
@@ -78,9 +98,29 @@ public class CustomerFragment extends Fragment {
     protected void getCustomerGson(String text) {
         gson = new Gson();
         String jsonOutput = text;
-        Type type = new TypeToken<Shop>(){}.getType();
-
+        Type type = new TypeToken<Shop>() {}.getType();
         shop = (Shop) gson.fromJson(jsonOutput, type);
+    }
 
+    private void registerCustomer(String firstname, String lastname) {
+        asyncTaskPOST.execute(BASE_URL + "/shop/customers/", firstname, lastname);
+    }
+
+    private void showDialogRegister() {
+        Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.customer_dialog);
+
+        firstname = (EditText) dialog.findViewById(R.id.firstname);
+        lastname = (EditText) dialog.findViewById(R.id.lastname);
+        finish = (Button) dialog.findViewById(R.id.finish);
+
+        finish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!firstname.getText().toString().trim().equals("") && lastname.getText().toString().trim().equals("")) {
+                    
+                }
+            }
+        });
     }
 }

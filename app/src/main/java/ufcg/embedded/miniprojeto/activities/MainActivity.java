@@ -11,7 +11,7 @@ import com.google.gson.Gson;
 import ufcg.embedded.miniprojeto.R;
 import ufcg.embedded.miniprojeto.models.Fruit;
 import ufcg.embedded.miniprojeto.models.Shop;
-import ufcg.embedded.miniprojeto.toolbox.HttpAsyncTask;
+import ufcg.embedded.miniprojeto.toolbox.HttpAsyncTaskGET;
 import ufcg.embedded.miniprojeto.toolbox.PagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private Shop shop;
     private Fruit fruit;
-    private HttpAsyncTask asyncTask;
+    private HttpAsyncTaskGET asyncTask;
     private Gson gson;
 
     @Override

@@ -19,11 +19,11 @@ import java.io.InputStreamReader;
 /**
  * Created by treinamento-09 on 02/06/16.
  */
-public class HttpAsyncTask extends AsyncTask<String, String, String> {
+public class HttpAsyncTaskGET extends AsyncTask<String, String, String> {
     private Context context;
     private ProgressDialog dialog;
 
-    public HttpAsyncTask(Context context) {
+    public HttpAsyncTaskGET(Context context) {
         this.context = context;
         dialog = new ProgressDialog(context);
         dialog.setMessage("Downloading file..");
