@@ -9,8 +9,11 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,13 +33,21 @@ public class HtttpAsyncTaskPOST extends AsyncTask<String, String, String> {
         // Create a new HttpClient and Post Header
         HttpClient httpclient = new DefaultHttpClient();
         HttpPost httppost = new HttpPost(url);
+        JSONObject obj = new JSONObject();
+        String message;
 
         try {
-            // Add your data
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-            nameValuePairs.add(new BasicNameValuePair("firstname", firstname));
-            nameValuePairs.add(new BasicNameValuePair("lastname", lastname));
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            obj.put("firstname", firstname);
+            obj.put("lastname", lastname);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            message = obj.toString();
+            Log.i("Script: ", message);
+
+            httppost.setEntity(new StringEntity(message));
             httppost.setHeader("Content-Type", "application/json");
             httppost.setHeader("Accept", "application/json");
 

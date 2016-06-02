@@ -8,21 +8,12 @@ import java.util.List;
  */
 public class Customer {
     private List<Order> orders;
-    private String id;
     private String firstname;
     private String lastname;
     private String customer_url;
 
     public Customer() {
         orders = new ArrayList<Order>();
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getFirstname() {

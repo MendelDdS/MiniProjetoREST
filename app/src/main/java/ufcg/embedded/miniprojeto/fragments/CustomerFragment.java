@@ -50,18 +50,7 @@ public class CustomerFragment extends Fragment {
         View view = (ViewGroup) inflater.inflate(R.layout.customer_layout, container, false);
         custList = (ListView) view.findViewById(R.id.custList);
         registerCust = (Button) view.findViewById(R.id.registerCust);
-
-        asyncTask = new HttpAsyncTaskGET(this.getContext());
-        try {
-            outputJason = asyncTask.execute(BASE_URL + "/shop/customers/").get();
-            getCustomerGson(outputJason);
-            Log.i("Script: ", String.valueOf(shop.getCategories().size()));
-            showCustomers();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+        refreshList();
 
         registerCust.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,6 +69,20 @@ public class CustomerFragment extends Fragment {
     public void onResume() {
         super.onResume();
         showCustomers();
+    }
+
+    private void refreshList() {
+        asyncTask = new HttpAsyncTaskGET(this.getContext());
+        try {
+            outputJason = asyncTask.execute(BASE_URL + "/shop/customers/").get();
+            getCustomerGson(outputJason);
+            Log.i("Script: ", String.valueOf(shop.getCategories().size()));
+            showCustomers();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
     private void showCustomers() {
@@ -107,20 +110,29 @@ public class CustomerFragment extends Fragment {
     }
 
     private void showDialogRegister() {
-        Dialog dialog = new Dialog(getContext());
+        final Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.customer_dialog);
 
         firstname = (EditText) dialog.findViewById(R.id.firstname);
         lastname = (EditText) dialog.findViewById(R.id.lastname);
         finish = (Button) dialog.findViewById(R.id.finish);
+        asyncTaskPOST = new HtttpAsyncTaskPOST();
+
 
         finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!firstname.getText().toString().trim().equals("") && lastname.getText().toString().trim().equals("")) {
-                    
+                if (!firstname.getText().toString().trim().equals("") && !lastname.getText().toString().trim().equals("")) {
+                    Customer cust = new Customer();
+                    cust.setFirstname(firstname.getText().toString());
+                    cust.setLastname(lastname.getText().toString());
+                    asyncTaskPOST.execute(BASE_URL + "/shop/customers/", firstname.getText().toString(), lastname.getText().toString());
+                    refreshList();
+                    dialog.dismiss();
                 }
             }
         });
+
+        dialog.show();
     }
 }
