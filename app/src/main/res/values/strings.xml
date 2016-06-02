@@ -4,4 +4,9 @@
     <string name="products">Produtos</string>
     <string name="customers">Clientes</string>
     <string name="categories">Categorias</string>
+
+    <string-array name="titles">
+        <item>Produtos</item>
+        <item>Clientes</item>
+    </string-array>
 </resources>
