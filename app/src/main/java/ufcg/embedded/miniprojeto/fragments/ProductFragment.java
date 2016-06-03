@@ -42,7 +42,7 @@ public class ProductFragment extends Fragment {
     private Retrofit retrofit;
     private ListView productsList;
     private ArrayAdapter<String> listAdapter;
-    private Shop shop = null;;
+    private Shop shop;
     private ShopService shopService;
 
     @Nullable
@@ -138,5 +138,4 @@ public class ProductFragment extends Fragment {
             productsList.setAdapter(listAdapter);
         }
     }
-   
 }

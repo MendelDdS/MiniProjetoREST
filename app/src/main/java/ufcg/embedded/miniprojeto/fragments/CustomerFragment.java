@@ -55,6 +55,13 @@ public class CustomerFragment extends Fragment {
         custList = (ListView) view.findViewById(R.id.custList);
         registerCust = (Button) view.findViewById(R.id.registerCust);
 
+        registerCust.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registerCust();
+            }
+        });
+
         return view;
     }
 
@@ -105,5 +112,50 @@ public class CustomerFragment extends Fragment {
             listAdapter = new ArrayAdapter<String>(this.getActivity(), R.layout.support_simple_spinner_dropdown_item, frts);
             custList.setAdapter(listAdapter);
         }
+    }
+
+    private void registerCust() {
+        final Dialog dialog = new Dialog(this.getContext());
+        dialog.setContentView(R.layout.customer_dialog);
+        firstname = (EditText) dialog.findViewById(R.id.firstname);
+        lastname = (EditText) dialog.findViewById(R.id.lastname);
+        finish = (Button) dialog.findViewById(R.id.finish);
+
+        finish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!firstname.getText().toString().trim().equals("") && !lastname.getText().toString().trim().equals("")) {
+                    Customer customer = new Customer();
+                    customer.setFirstname(firstname.getText().toString());
+                    customer.setLastname(lastname.getText().toString());
+
+                    retrofit = new Retrofit.Builder()
+                            .baseUrl(BASE_URL)
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+
+                    shopService = retrofit.create(ShopService.class);
+                    Call<Customer> requestProducts = shopService.registerCustomer(customer);
+
+                    requestProducts.enqueue(new Callback<Customer>() {
+                        @Override
+                        public void onResponse(Call<Customer> call, Response<Customer> response) {
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<Customer> call, Throwable t) {
+                            Log.i("Error: ", t.getMessage());
+                        }
+                    });
+
+                    showCustomers();
+                    dialog.dismiss();
+
+                }
+            }
+        });
+
+        dialog.show();
     }
 }
