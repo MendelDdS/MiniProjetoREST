@@ -23,11 +23,17 @@ import org.w3c.dom.Text;
 import java.lang.reflect.Type;
 import java.util.concurrent.ExecutionException;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import ufcg.embedded.miniprojeto.R;
 import ufcg.embedded.miniprojeto.models.Customer;
 import ufcg.embedded.miniprojeto.models.Shop;
 import ufcg.embedded.miniprojeto.toolbox.HttpAsyncTaskGET;
 import ufcg.embedded.miniprojeto.toolbox.HtttpAsyncTaskPOST;
+import ufcg.embedded.miniprojeto.toolbox.ShopService;
 
 /**
  * Created by treinamento-09 on 02/06/16.
@@ -38,11 +44,9 @@ public class CustomerFragment extends Fragment {
     private EditText firstname, lastname;
     private Shop shop;
     private ArrayAdapter<String> listAdapter;
-    private HttpAsyncTaskGET asyncTask;
-    private HtttpAsyncTaskPOST asyncTaskPOST;
-    private String outputJason;
-    private Gson gson;
     private Button registerCust, finish;
+    private Retrofit retrofit;
+    private ShopService shopService;
 
     @Nullable
     @Override
@@ -50,14 +54,7 @@ public class CustomerFragment extends Fragment {
         View view = (ViewGroup) inflater.inflate(R.layout.customer_layout, container, false);
         custList = (ListView) view.findViewById(R.id.custList);
         registerCust = (Button) view.findViewById(R.id.registerCust);
-        refreshList();
 
-        registerCust.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDialogRegister();
-            }
-        });
         return view;
     }
 
@@ -71,21 +68,33 @@ public class CustomerFragment extends Fragment {
         showCustomers();
     }
 
-    private void refreshList() {
-        asyncTask = new HttpAsyncTaskGET(this.getContext());
-        try {
-            outputJason = asyncTask.execute(BASE_URL + "/shop/customers/").get();
-            getCustomerGson(outputJason);
-            Log.i("Script: ", String.valueOf(shop.getCategories().size()));
-            showCustomers();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+    private void showCustomers() {
+        retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        shopService = retrofit.create(ShopService.class);
+        Call<Shop> requestProducts = shopService.getCustomers();
+
+        requestProducts.enqueue(new Callback<Shop>() {
+            @Override
+            public void onResponse(Call<Shop> call, Response<Shop> response) {
+                if (!response.isSuccessful()) {
+                    Log.i("Erro: ", String.valueOf(response.code()));
+                } else {
+                    shop = response.body();
+                    showListCustomers();
+                }
+            }
+            @Override
+            public void onFailure(Call<Shop> call, Throwable t) {
+                Log.i("Error: ", t.getMessage());
+            }
+        });
     }
 
-    private void showCustomers() {
+    private void showListCustomers() {
         if (shop != null) {
             String[] frts = new String[shop.getCustomers().size()];
 
@@ -96,43 +105,5 @@ public class CustomerFragment extends Fragment {
             listAdapter = new ArrayAdapter<String>(this.getActivity(), R.layout.support_simple_spinner_dropdown_item, frts);
             custList.setAdapter(listAdapter);
         }
-    }
-
-    protected void getCustomerGson(String text) {
-        gson = new Gson();
-        String jsonOutput = text;
-        Type type = new TypeToken<Shop>() {}.getType();
-        shop = (Shop) gson.fromJson(jsonOutput, type);
-    }
-
-    private void registerCustomer(String firstname, String lastname) {
-        asyncTaskPOST.execute(BASE_URL + "/shop/customers/", firstname, lastname);
-    }
-
-    private void showDialogRegister() {
-        final Dialog dialog = new Dialog(getContext());
-        dialog.setContentView(R.layout.customer_dialog);
-
-        firstname = (EditText) dialog.findViewById(R.id.firstname);
-        lastname = (EditText) dialog.findViewById(R.id.lastname);
-        finish = (Button) dialog.findViewById(R.id.finish);
-        asyncTaskPOST = new HtttpAsyncTaskPOST();
-
-
-        finish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!firstname.getText().toString().trim().equals("") && !lastname.getText().toString().trim().equals("")) {
-                    Customer cust = new Customer();
-                    cust.setFirstname(firstname.getText().toString());
-                    cust.setLastname(lastname.getText().toString());
-                    asyncTaskPOST.execute(BASE_URL + "/shop/customers/", firstname.getText().toString(), lastname.getText().toString());
-                    refreshList();
-                    dialog.dismiss();
-                }
-            }
-        });
-
-        dialog.show();
     }
 }

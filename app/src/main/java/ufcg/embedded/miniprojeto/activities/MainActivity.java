@@ -8,9 +8,16 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import com.google.gson.Gson;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Retrofit;
 import ufcg.embedded.miniprojeto.R;
 import ufcg.embedded.miniprojeto.models.Fruit;
+import ufcg.embedded.miniprojeto.models.Product;
 import ufcg.embedded.miniprojeto.models.Shop;
+import ufcg.embedded.miniprojeto.models.ShopRetrofit;
 import ufcg.embedded.miniprojeto.toolbox.HttpAsyncTaskGET;
 import ufcg.embedded.miniprojeto.toolbox.PagerAdapter;
 
@@ -36,27 +43,5 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.viewPager);
         mViewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), getResources().getStringArray(R.array.titles)));
         mTabLayout.setupWithViewPager(mViewPager);
-
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                Fragment fm = ((PagerAdapter) mViewPager.getAdapter()).getFragment(position);
-                Log.i("Script: ", String.valueOf(position));
-                if ((position == 0) && fm != null) {
-                    Log.i("Script: ", "0");
-
-                } else if ((position == 1) && fm != null) {
-                    Log.i("Script: ", "1");
-
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {}
-
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
-
-        });
     }
 }
