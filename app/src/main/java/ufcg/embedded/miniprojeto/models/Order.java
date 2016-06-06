@@ -8,13 +8,13 @@ import java.util.List;
  */
 public class Order {
 
+    private int total;
     private String createdAt;
     private String updatedAt;
     private String state;
-    private String customerUrl;
+    private String customer_url;
     private Action actions;
-    private String itemsUrl;
-    private List<Item> items = new ArrayList<Item>();
+    private String items_url;
 
     public String getCreatedAt() {
         return createdAt;
@@ -40,13 +40,6 @@ public class Order {
         this.state = state;
     }
 
-    public String getCustomerUrl() {
-        return customerUrl;
-    }
-
-    public void setCustomerUrl(String customerUrl) {
-        this.customerUrl = customerUrl;
-    }
 
     public Action getActions() {
         return actions;
@@ -56,19 +49,27 @@ public class Order {
         this.actions = actions;
     }
 
-    public String getItemsUrl() {
-        return itemsUrl;
+    public int getTotal() {
+        return total;
     }
 
-    public void setItemsUrl(String itemsUrl) {
-        this.itemsUrl = itemsUrl;
+    public void setTotal(int total) {
+        this.total = total;
     }
 
-    public List<Item> getItems() {
-        return items;
+    public String getCustomer_url() {
+        return customer_url;
     }
 
-    public void setItems(List<Item> items) {
-        this.items = items;
+    public void setCustomer_url(String customer_url) {
+        this.customer_url = customer_url;
+    }
+
+    public String getItems_url() {
+        return items_url;
+    }
+
+    public void setItems_url(String items_url) {
+        this.items_url = items_url;
     }
 }

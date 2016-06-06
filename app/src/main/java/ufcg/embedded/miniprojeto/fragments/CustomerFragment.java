@@ -1,6 +1,7 @@
 package ufcg.embedded.miniprojeto.fragments;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,7 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -21,6 +22,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ufcg.embedded.miniprojeto.R;
+import ufcg.embedded.miniprojeto.activities.OrdersActivity;
 import ufcg.embedded.miniprojeto.models.Customer;
 import ufcg.embedded.miniprojeto.models.CustomerItem;
 import ufcg.embedded.miniprojeto.models.Shop;
@@ -51,9 +53,7 @@ public class CustomerFragment extends Fragment {
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-
         shopService = retrofit.create(ShopService.class);
-
         registerCust.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,6 +61,12 @@ public class CustomerFragment extends Fragment {
             }
         });
 
+        custList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                operCustomer(position);
+            }
+        });
         return view;
     }
 
@@ -70,11 +76,13 @@ public class CustomerFragment extends Fragment {
         showCustomers();
     }
 
-    private void showOneFruit(int position) {
-        Log.i("Cust: ", listAdapter.getItem(position).getValue());
+    private void operCustomer(int position) {
+        Intent intent = new Intent(getContext(), OrdersActivity.class);
+        intent.putExtra("name", listAdapter.getItem(position).getKey());
+        intent.putExtra("Customer", listAdapter.getItem(position).getValue());
+        startActivity(intent);
+        this.onDestroy();
     }
-
-
 
     private void showCustomers() {
         Call<Shop> requestProducts = shopService.getCustomers();
@@ -110,14 +118,16 @@ public class CustomerFragment extends Fragment {
 
     private void registerCust() {
         final Dialog dialog = new Dialog(this.getContext());
-        dialog.setContentView(R.layout.customer_dialog);
-        firstname = (EditText) dialog.findViewById(R.id.firstname);
+        dialog.setContentView(R.layout.register_customer_dialog);
+        firstname = (EditText) dialog.findViewById(R.id.name);
         lastname = (EditText) dialog.findViewById(R.id.lastname);
         finish = (Button) dialog.findViewById(R.id.finish);
 
         finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (firstname.isSelected()) firstname.setText("");
+                if (lastname.isSelected()) lastname.setText("");
                 if (!firstname.getText().toString().trim().equals("") && !lastname.getText().toString().trim().equals("")) {
                     Customer customer = new Customer();
                     customer.setFirstname(firstname.getText().toString());
