@@ -34,4 +34,19 @@ public class Fruit {
         this.name = name;
     }
 
+    public String getPhoto_url() {
+        return photo_url;
+    }
+
+    public void setPhoto_url(String photo_url) {
+        this.photo_url = photo_url;
+    }
+
+    public String getCategory_url() {
+        return category_url;
+    }
+
+    public void setCategory_url(String category_url) {
+        this.category_url = category_url;
+    }
 }

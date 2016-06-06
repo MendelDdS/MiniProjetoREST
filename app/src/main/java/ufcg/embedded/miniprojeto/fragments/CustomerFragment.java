@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import java.util.HashMap;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -20,7 +22,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ufcg.embedded.miniprojeto.R;
 import ufcg.embedded.miniprojeto.models.Customer;
+import ufcg.embedded.miniprojeto.models.CustomerItem;
 import ufcg.embedded.miniprojeto.models.Shop;
+import ufcg.embedded.miniprojeto.toolbox.ListViewAdapter;
 import ufcg.embedded.miniprojeto.toolbox.ShopService;
 
 /**
@@ -31,7 +35,7 @@ public class CustomerFragment extends Fragment {
     private ListView custList;
     private EditText firstname, lastname;
     private Shop shop;
-    private ArrayAdapter<String> listAdapter;
+    private ListViewAdapter listAdapter;
     private Button registerCust, finish;
     private Retrofit retrofit;
     private ShopService shopService;
@@ -43,6 +47,13 @@ public class CustomerFragment extends Fragment {
         custList = (ListView) view.findViewById(R.id.custList);
         registerCust = (Button) view.findViewById(R.id.registerCust);
 
+        retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        shopService = retrofit.create(ShopService.class);
+
         registerCust.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,23 +64,19 @@ public class CustomerFragment extends Fragment {
         return view;
     }
 
-    public void setShop(Shop shop) {
-        this.shop = shop;
-    }
-
     @Override
     public void onResume() {
         super.onResume();
         showCustomers();
     }
 
-    private void showCustomers() {
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+    private void showOneFruit(int position) {
+        Log.i("Cust: ", listAdapter.getItem(position).getValue());
+    }
 
-        shopService = retrofit.create(ShopService.class);
+
+
+    private void showCustomers() {
         Call<Shop> requestProducts = shopService.getCustomers();
 
         requestProducts.enqueue(new Callback<Shop>() {
@@ -79,7 +86,12 @@ public class CustomerFragment extends Fragment {
                     Log.i("Erro: ", String.valueOf(response.code()));
                 } else {
                     shop = response.body();
-                    showListCustomers();
+                    HashMap<String, String> customerMap = new HashMap<String, String>();
+
+                    for (int i = 0; i < shop.getCustomers().size(); i++) {
+                        customerMap.put(shop.getCustomers().get(i).getFirstname() + " " + shop.getCustomers().get(i).getLastname(), shop.getCustomers().get(i).getCustomer_url() );
+                    }
+                    showListCustomers(customerMap);
                 }
             }
             @Override
@@ -89,15 +101,9 @@ public class CustomerFragment extends Fragment {
         });
     }
 
-    private void showListCustomers() {
-        if (shop != null) {
-            String[] frts = new String[shop.getCustomers().size()];
-
-            for (int i = 0; i < shop.getCustomers().size(); i++) {
-                frts[i] = shop.getCustomers().get(i).getFirstname() + " " + shop.getCustomers().get(i).getLastname();
-            }
-
-            listAdapter = new ArrayAdapter<String>(this.getActivity(), R.layout.support_simple_spinner_dropdown_item, frts);
+    private void showListCustomers(HashMap<String, String> customers) {
+        if (customers != null) {
+            listAdapter = new ListViewAdapter(customers);
             custList.setAdapter(listAdapter);
         }
     }
@@ -116,23 +122,16 @@ public class CustomerFragment extends Fragment {
                     Customer customer = new Customer();
                     customer.setFirstname(firstname.getText().toString());
                     customer.setLastname(lastname.getText().toString());
+                    Call<CustomerItem> requestProducts = shopService.registerCustomer(customer);
 
-                    retrofit = new Retrofit.Builder()
-                            .baseUrl(BASE_URL)
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .build();
-
-                    shopService = retrofit.create(ShopService.class);
-                    Call<Customer> requestProducts = shopService.registerCustomer(customer);
-
-                    requestProducts.enqueue(new Callback<Customer>() {
+                    requestProducts.enqueue(new Callback<CustomerItem>() {
                         @Override
-                        public void onResponse(Call<Customer> call, Response<Customer> response) {
+                        public void onResponse(Call<CustomerItem> call, Response<CustomerItem> response) {
 
                         }
 
                         @Override
-                        public void onFailure(Call<Customer> call, Throwable t) {
+                        public void onFailure(Call<CustomerItem> call, Throwable t) {
                             Log.i("Error: ", t.getMessage());
                         }
                     });

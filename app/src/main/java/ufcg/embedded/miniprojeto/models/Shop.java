@@ -12,14 +12,14 @@ public class Shop {
     private List<Categorie> categories;
     private List<Order> orders;
     private List<Vendor>vendors;
-    private List<Customer> customers;
+    private List<CustomerItem> customers;
 
     public Shop() {
         products = new ArrayList<Product>();
         categories = new ArrayList<Categorie>();
         orders = new ArrayList<Order>();
         vendors = new ArrayList<Vendor>();
-        customers = new ArrayList<Customer>();
+        customers = new ArrayList<CustomerItem>();
     }
 
     public List<Product> getProducts() {
@@ -54,11 +54,11 @@ public class Shop {
         this.vendors = vendors;
     }
 
-    public List<Customer> getCustomers() {
+    public List<CustomerItem> getCustomers() {
         return customers;
     }
 
-    public void setCustomers(List<Customer> customers) {
+    public void setCustomers(List<CustomerItem> customers) {
         this.customers = customers;
     }
 

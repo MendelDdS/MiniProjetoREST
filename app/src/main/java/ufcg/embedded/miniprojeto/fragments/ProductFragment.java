@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,7 +23,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ufcg.embedded.miniprojeto.R;
 import ufcg.embedded.miniprojeto.models.Fruit;
+import ufcg.embedded.miniprojeto.models.Product;
 import ufcg.embedded.miniprojeto.models.Shop;
+import ufcg.embedded.miniprojeto.toolbox.ListViewAdapter;
 import ufcg.embedded.miniprojeto.toolbox.ShopService;
 
 /**
@@ -32,7 +35,7 @@ public class ProductFragment extends Fragment {
     private String BASE_URL = "https://api.predic8.de";
     private Retrofit retrofit;
     private ListView productsList;
-    private ArrayAdapter<String> listAdapter;
+    private ListViewAdapter listAdapter;
     private Shop shop;
     private ShopService shopService;
 
@@ -46,7 +49,7 @@ public class ProductFragment extends Fragment {
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-
+        shopService = retrofit.create(ShopService.class);
 
         showFruits();
 
@@ -67,24 +70,22 @@ public class ProductFragment extends Fragment {
         final TextView fruitName = (TextView) dialog.findViewById(R.id.fruitName);
         final TextView price = (TextView) dialog.findViewById(R.id.price);
 
-        shopService = retrofit.create(ShopService.class);
+        Call<Product> requestFruit = shopService.getFruit(listAdapter.getItem(position).getValue());
 
-        Call<Fruit> requestFruit = shopService.getFruit(shop.getProducts().get(position).getProduct_url());
-
-        requestFruit.enqueue(new Callback<Fruit>() {
+        requestFruit.enqueue(new Callback<Product>() {
             @Override
-            public void onResponse(Call<Fruit> call, Response<Fruit> response) {
+            public void onResponse(Call<Product> call, Response<Product> response) {
                 if (!response.isSuccessful()) {
                     Log.i("Erro: ", String.valueOf(response.message()));
                 } else {
-                    Fruit fruit = response.body();
+                    Product fruit = response.body();
                     fruitName.setText(fruit.getName());
                     price.setText(String.valueOf(fruit.getPrice()));
                     dialog.show();
                 }
             }
             @Override
-            public void onFailure(Call<Fruit> call, Throwable t) {
+            public void onFailure(Call<Product> call, Throwable t) {
                 Log.i("Error: ", t.getMessage());
             }
         });
@@ -96,7 +97,6 @@ public class ProductFragment extends Fragment {
     }
 
     private void showFruits() {
-        shopService = retrofit.create(ShopService.class);
         Call<Shop> requestProducts = shopService.getProducts();
 
         requestProducts.enqueue(new Callback<Shop>() {
@@ -106,7 +106,11 @@ public class ProductFragment extends Fragment {
                     Log.i("Erro: ", String.valueOf(response.code()));
                 } else {
                     shop = response.body();
-                    showListFruits();
+                    HashMap<String, String> fruitMap = new HashMap<String, String>();
+                    for (int i = 0; i < shop.getProducts().size(); i++) {
+                        fruitMap.put(shop.getProducts().get(i).getName(), shop.getProducts().get(i).getProduct_url());
+                    }
+                    showListFruits(fruitMap);
                 }
             }
             @Override
@@ -116,15 +120,9 @@ public class ProductFragment extends Fragment {
         });
     }
 
-    private void showListFruits() {
+    private void showListFruits(HashMap<String, String> fruits) {
         if (shop != null) {
-            String[] frts = new String[shop.getProducts().size()];
-
-            for (int i = 0; i < shop.getProducts().size(); i++) {
-                frts[i] = shop.getProducts().get(i).getName();
-            }
-
-            listAdapter = new ArrayAdapter<String>(this.getActivity(), R.layout.support_simple_spinner_dropdown_item, frts);
+            listAdapter = new ListViewAdapter(fruits);
             productsList.setAdapter(listAdapter);
         }
     }
