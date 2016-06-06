@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SlidingPaneLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,15 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Type;
-import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,8 +21,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import ufcg.embedded.miniprojeto.R;
 import ufcg.embedded.miniprojeto.models.Customer;
 import ufcg.embedded.miniprojeto.models.Shop;
-import ufcg.embedded.miniprojeto.toolbox.HttpAsyncTaskGET;
-import ufcg.embedded.miniprojeto.toolbox.HtttpAsyncTaskPOST;
 import ufcg.embedded.miniprojeto.toolbox.ShopService;
 
 /**

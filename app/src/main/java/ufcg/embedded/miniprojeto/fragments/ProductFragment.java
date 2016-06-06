@@ -13,14 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,9 +22,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ufcg.embedded.miniprojeto.R;
 import ufcg.embedded.miniprojeto.models.Fruit;
-import ufcg.embedded.miniprojeto.models.Product;
 import ufcg.embedded.miniprojeto.models.Shop;
-import ufcg.embedded.miniprojeto.toolbox.HttpAsyncTaskGET;
 import ufcg.embedded.miniprojeto.toolbox.ShopService;
 
 /**
@@ -50,6 +41,13 @@ public class ProductFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = (ViewGroup) inflater.inflate(R.layout.product_layout, container, false);
         productsList = (ListView) view.findViewById(R.id.fruitList);
+
+        retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+
         showFruits();
 
         productsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -61,16 +59,13 @@ public class ProductFragment extends Fragment {
         return view;
     }
 
+
+
     private void showOneFruit(int position) {
         final Dialog dialog = new Dialog(this.getContext());
         dialog.setContentView(R.layout.fruit_dialog);
         final TextView fruitName = (TextView) dialog.findViewById(R.id.fruitName);
         final TextView price = (TextView) dialog.findViewById(R.id.price);
-
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
 
         shopService = retrofit.create(ShopService.class);
 
@@ -101,11 +96,6 @@ public class ProductFragment extends Fragment {
     }
 
     private void showFruits() {
-        retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
         shopService = retrofit.create(ShopService.class);
         Call<Shop> requestProducts = shopService.getProducts();
 
