@@ -1,7 +1,6 @@
 package ufcg.embedded.miniprojeto.fragments;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,7 +14,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,10 +22,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ufcg.embedded.miniprojeto.R;
-import ufcg.embedded.miniprojeto.activities.OrdersActivity;
 import ufcg.embedded.miniprojeto.models.Customer;
-import ufcg.embedded.miniprojeto.models.CustomerItem;
-import ufcg.embedded.miniprojeto.models.Shop;
 import ufcg.embedded.miniprojeto.toolbox.ListViewAdapter;
 import ufcg.embedded.miniprojeto.toolbox.ShopService;
 
@@ -37,11 +33,11 @@ public class CustomerFragment extends Fragment {
     private String BASE_URL = "https://api.predic8.de";
     private ListView custList;
     private EditText firstname, lastname;
-    private Shop shop;
     private ListViewAdapter listAdapter;
     private Button registerCust, finish;
     private Retrofit retrofit;
     private ShopService shopService;
+    private List<Customer> customers_list;
 
     @Nullable
     @Override
@@ -65,7 +61,7 @@ public class CustomerFragment extends Fragment {
         custList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                operCustomer(position);
+//                operCustomer(position);
             }
         });
         return view;
@@ -77,44 +73,31 @@ public class CustomerFragment extends Fragment {
         showCustomers();
     }
 
-    private void operCustomer(int position) {
-        Intent intent = new Intent(getContext(), OrdersActivity.class);
-        intent.putExtra("name", listAdapter.getItem(position).getKey());
-        intent.putExtra("Customer", listAdapter.getItem(position).getValue());
-        startActivity(intent);
-        this.onDestroy();
-    }
-
     private void showCustomers() {
-        Call<Shop> requestProducts = shopService.getCustomers();
+        Call<List<Customer>> requestProducts = shopService.getCustomers();
 
-        requestProducts.enqueue(new Callback<Shop>() {
+        requestProducts.enqueue(new Callback<List<Customer>>() {
             @Override
-            public void onResponse(Call<Shop> call, Response<Shop> response) {
+            public void onResponse(Call<List<Customer>> call, Response<List<Customer>> response) {
+                try {
+                    Log.d("TEST", response.errorBody().string());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 if (!response.isSuccessful()) {
                     Log.i("Erro: ", String.valueOf(response.code()));
                 } else {
-                    shop = response.body();
-                    HashMap<String, String> customerMap = new HashMap<String, String>();
-
-                    for (int i = 0; i < shop.getCustomers().size(); i++) {
-                        customerMap.put(shop.getCustomers().get(i).getFirstname() + " " + shop.getCustomers().get(i).getLastname(), shop.getCustomers().get(i).getCustomer_url() );
+                    customers_list = response.body();
+                    for (int i = 0; i < customers_list.size(); i++) {
+                        Log.d("TEST", customers_list.get(i).getCustomer_url());
                     }
-                    showListCustomers(customerMap);
                 }
             }
             @Override
-            public void onFailure(Call<Shop> call, Throwable t) {
+            public void onFailure(Call<List<Customer>> call, Throwable t) {
                 Log.i("Error: ", t.getMessage());
             }
         });
-    }
-
-    private void showListCustomers(HashMap<String, String> customers) {
-        if (customers != null) {
-            listAdapter = new ListViewAdapter(customers);
-            custList.setAdapter(listAdapter);
-        }
     }
 
     private void registerCust() {

@@ -10,7 +10,6 @@ import java.util.Map;
 
 import ufcg.embedded.miniprojeto.fragments.CustomerFragment;
 import ufcg.embedded.miniprojeto.fragments.ProductFragment;
-import ufcg.embedded.miniprojeto.models.Shop;
 
 /**
  * Created by treinamento-09 on 02/06/16.

@@ -1,8 +1,5 @@
 package ufcg.embedded.miniprojeto.models;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by treinamento-09 on 30/05/16.
  */
@@ -10,6 +7,7 @@ public class Customer {
     private String firstname;
     private String lastname;
     private String orders_url;
+    private String customer_url;
 
     public String getFirstname() {
         return firstname;
@@ -33,5 +31,13 @@ public class Customer {
 
     public void setOrders_url(String orders_url) {
         this.orders_url = orders_url;
+    }
+
+    public String getCustomer_url() {
+        return customer_url;
+    }
+
+    public void setCustomer_url(String customer_url) {
+        this.customer_url = customer_url;
     }
 }

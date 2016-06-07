@@ -1,14 +1,11 @@
 package ufcg.embedded.miniprojeto.models;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by treinamento-09 on 30/05/16.
  */
 public class Order {
 
-    private int total;
+    private Double total;
     private String createdAt;
     private String updatedAt;
     private String state;
@@ -49,11 +46,11 @@ public class Order {
         this.actions = actions;
     }
 
-    public int getTotal() {
+    public Double getTotal() {
         return total;
     }
 
-    public void setTotal(int total) {
+    public void setTotal(Double total) {
         this.total = total;
     }
 

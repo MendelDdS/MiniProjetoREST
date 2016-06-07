@@ -9,12 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.io.IOException;
-import java.util.HashMap;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,9 +20,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ufcg.embedded.miniprojeto.R;
-import ufcg.embedded.miniprojeto.models.Fruit;
 import ufcg.embedded.miniprojeto.models.Product;
-import ufcg.embedded.miniprojeto.models.Shop;
 import ufcg.embedded.miniprojeto.toolbox.ListViewAdapter;
 import ufcg.embedded.miniprojeto.toolbox.ShopService;
 
@@ -36,7 +32,6 @@ public class ProductFragment extends Fragment {
     private Retrofit retrofit;
     private ListView productsList;
     private ListViewAdapter listAdapter;
-    private Shop shop;
     private ShopService shopService;
 
     @Nullable
@@ -97,33 +92,22 @@ public class ProductFragment extends Fragment {
     }
 
     private void showFruits() {
-        Call<Shop> requestProducts = shopService.getProducts();
+        Call<List<Product>> requestProducts = shopService.getProducts();
 
-        requestProducts.enqueue(new Callback<Shop>() {
+        requestProducts.enqueue(new Callback<List<Product>>() {
             @Override
-            public void onResponse(Call<Shop> call, Response<Shop> response) {
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
                 if (!response.isSuccessful()) {
                     Log.i("Erro: ", String.valueOf(response.code()));
                 } else {
-                    shop = response.body();
-                    HashMap<String, String> fruitMap = new HashMap<String, String>();
-                    for (int i = 0; i < shop.getProducts().size(); i++) {
-                        fruitMap.put(shop.getProducts().get(i).getName(), shop.getProducts().get(i).getProduct_url());
-                    }
-                    showListFruits(fruitMap);
+
                 }
             }
             @Override
-            public void onFailure(Call<Shop> call, Throwable t) {
+            public void onFailure(Call<List<Product>> call, Throwable t) {
                 Log.i("Error: ", t.getMessage());
             }
         });
     }
 
-    private void showListFruits(HashMap<String, String> fruits) {
-        if (shop != null) {
-            listAdapter = new ListViewAdapter(fruits);
-            productsList.setAdapter(listAdapter);
-        }
-    }
 }
