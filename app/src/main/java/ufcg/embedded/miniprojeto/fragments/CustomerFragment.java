@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import retrofit2.Call;
@@ -126,22 +127,26 @@ public class CustomerFragment extends Fragment {
         finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (firstname.isSelected()) firstname.setText("");
-                if (lastname.isSelected()) lastname.setText("");
-                if (!firstname.getText().toString().trim().equals("") && !lastname.getText().toString().trim().equals("")) {
+                 if (!firstname.getText().toString().trim().equals("") && !lastname.getText().toString().trim().equals("")) {
                     Customer customer = new Customer();
                     customer.setFirstname(firstname.getText().toString());
                     customer.setLastname(lastname.getText().toString());
-                    Call<CustomerItem> requestProducts = shopService.registerCustomer(customer);
+                    Call<Customer> requestCustomer = shopService.registerCustomer(customer);
 
-                    requestProducts.enqueue(new Callback<CustomerItem>() {
+                    requestCustomer.enqueue(new Callback<Customer>() {
                         @Override
-                        public void onResponse(Call<CustomerItem> call, Response<CustomerItem> response) {
-
+                        public void onResponse(Call<Customer> call, Response<Customer> response) {
+                            if (!response.isSuccessful()) {
+                                try {
+                                    Log.i("Error: ", response.errorBody().string());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                         }
 
                         @Override
-                        public void onFailure(Call<CustomerItem> call, Throwable t) {
+                        public void onFailure(Call<Customer> call, Throwable t) {
                             Log.i("Error: ", t.getMessage());
                         }
                     });

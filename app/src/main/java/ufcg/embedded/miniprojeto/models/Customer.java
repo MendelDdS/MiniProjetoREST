@@ -10,11 +10,6 @@ public class Customer {
     private String firstname;
     private String lastname;
     private String orders_url;
-    private List<Order> orders;
-
-    public Customer() {
-        orders = new ArrayList<Order>();
-    }
 
     public String getFirstname() {
         return firstname;
@@ -38,13 +33,5 @@ public class Customer {
 
     public void setOrders_url(String orders_url) {
         this.orders_url = orders_url;
-    }
-
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
     }
 }

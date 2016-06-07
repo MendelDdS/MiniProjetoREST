@@ -35,7 +35,7 @@ public interface ShopService {
     Call<CustomerItem> getOrders(@Url String url);
 
     @POST("/shop/customers/")
-    Call<CustomerItem> registerCustomer(@Body Customer customer);
+    Call<Customer> registerCustomer(@Body Customer customer);
 
     @DELETE
     Call<CustomerItem> deleteCustomer(@Url String url);
