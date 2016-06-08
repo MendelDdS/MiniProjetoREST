@@ -26,10 +26,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ufcg.embedded.miniprojeto.R;
-import ufcg.embedded.miniprojeto.models.Customer;
 import ufcg.embedded.miniprojeto.models.Product;
-import ufcg.embedded.miniprojeto.toolbox.CustomersDeserialize;
-import ufcg.embedded.miniprojeto.toolbox.ListViewAdapter;
+import ufcg.embedded.miniprojeto.toolbox.FruitDB;
 import ufcg.embedded.miniprojeto.toolbox.ProductsDeserialize;
 import ufcg.embedded.miniprojeto.toolbox.ShopService;
 
@@ -78,8 +76,10 @@ public class ProductFragment extends Fragment {
         dialog.setContentView(R.layout.fruit_dialog);
         final TextView fruitName = (TextView) dialog.findViewById(R.id.fruitName);
         final TextView price = (TextView) dialog.findViewById(R.id.price);
+        FruitDB fruitDB = new FruitDB(getContext());
 
-        Call<Product> requestFruit = shopService.getFruit("");
+        Log.d("Error: ", fruitDB.getAll().get(position).getProduct_url());
+        Call<Product> requestFruit = shopService.getFruit(fruitDB.getAll().get(position).getProduct_url());
 
         requestFruit.enqueue(new Callback<Product>() {
             @Override
@@ -116,9 +116,13 @@ public class ProductFragment extends Fragment {
                 } else {
                     product_list = response.body();
                     String[] names = new String[product_list.size()];
+                    FruitDB fruitDB = new FruitDB(getContext());
+
+                    fruitDB.deleteAll();
 
                     for (int i = 0; i < product_list.size(); i++) {
                         names[i] = product_list.get(i).toString();
+                        fruitDB.insert(product_list.get(i));
                     }
 
                     listAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, names);

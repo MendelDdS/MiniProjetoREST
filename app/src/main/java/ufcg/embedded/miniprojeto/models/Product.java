@@ -4,6 +4,7 @@ package ufcg.embedded.miniprojeto.models;
  * Created by treinamento-09 on 30/05/16.
  */
 public class Product {
+    private int id;
     private String name;
     private double price;
     private String photo_url;
@@ -57,6 +58,14 @@ public class Product {
 
     public void setCategory_url(String category_url) {
         this.category_url = category_url;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
