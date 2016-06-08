@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import java.util.HashMap;
 import java.util.Map;
 
-import ufcg.embedded.miniprojeto.fragments.CustomerFragment;
-import ufcg.embedded.miniprojeto.fragments.ProductFragment;
 import ufcg.embedded.miniprojeto.fragments.RootFragment;
 
 /**
@@ -30,12 +28,8 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 0:
-                return new ProductFragment();
-            case 1:
-                return new RootFragment();
             default:
-                return null;
+                return new RootFragment();
         }
     }
 

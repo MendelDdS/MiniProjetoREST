@@ -1,7 +1,6 @@
 package ufcg.embedded.miniprojeto.fragments;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -97,7 +96,7 @@ public class CustomerFragment extends Fragment {
     }
 
     private void showCustomers() {
-        Call<List<Customer>> requestProducts = shopService.getCustomers();
+        Call<List<Customer>> requestProducts = shopService.getAllCustomers();
 
         requestProducts.enqueue(new Callback<List<Customer>>() {
             @Override
@@ -143,7 +142,7 @@ public class CustomerFragment extends Fragment {
                     Customer customer = new Customer();
                     customer.setFirstname(firstname.getText().toString());
                     customer.setLastname(lastname.getText().toString());
-                    Call<Customer> requestCustomer = shopService.registerCustomer(customer);
+                    Call<Customer> requestCustomer = shopService.createCustomer(customer);
 
                     requestCustomer.enqueue(new Callback<Customer>() {
                         @Override

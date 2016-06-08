@@ -6,34 +6,35 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Url;
 import ufcg.embedded.miniprojeto.models.Customer;
-import ufcg.embedded.miniprojeto.models.Order;
-import ufcg.embedded.miniprojeto.models.Product;
 
-/**
- * Created by treinamento-09 on 03/06/16.
- */
 public interface ShopService {
-    @GET("/shop/products/")
-    Call<List<Product>> getProducts();
 
     @GET("/shop/customers/")
-    Call<List<Customer>> getCustomers();
+    Call<List<Customer>> getAllCustomers();
 
-    @GET
-    Call<Product> getFruit(@Url String url);
+    @POST("/shop/customers/")
+    Call<Customer> createCustomer(@Body Customer customer);
+
+    @DELETE
+    Call<Customer> deleteCustomer(@Url String url);
 
     @GET
     Call<Customer> getCustomer(@Url String url);
 
+    @PATCH
+    Call<Customer> updateCustomer(@Url String url);
+
+    @PUT
+    Call<Customer> replaceCustomer(@Url String url);
+
     @GET
-    Call<List<Order>> getOrders(@Url String url);
+    Call<Customer> getOrdersCustomer(@Url String url);
 
-    @POST("/shop/customers/")
-    Call<Customer> registerCustomer(@Body Customer customer);
-
-    @DELETE
-    Call<Customer> deleteCustomer(@Url String url);
+    @POST("/shop/customers/{id}/orders/")
+    Call<Customer> createOrderCustomer(@Body Customer customer);
 }
