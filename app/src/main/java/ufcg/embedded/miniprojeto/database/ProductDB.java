@@ -1,11 +1,10 @@
-package ufcg.embedded.miniprojeto.toolbox;
+package ufcg.embedded.miniprojeto.database;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.sql.SQLData;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,10 +13,11 @@ import ufcg.embedded.miniprojeto.models.Product;
 /**
  * Created by treinamento-09 on 08/06/16.
  */
-public class FruitDB {
+public class ProductDB {
     private SQLiteDatabase dbLite;
+    private final static String TABLE_NAME = "product";
 
-    public FruitDB(Context context) {
+    public ProductDB(Context context) {
         DBCore dbCore = new DBCore(context);
         dbLite = dbCore.getWritableDatabase();
     }
@@ -43,7 +43,7 @@ public class FruitDB {
 
     public void deleteAll() {
         dbLite.delete("product", null, null);
-        dbLite.execSQL("delete from sqlite_sequence where name = 'product'");
+        dbLite.execSQL("delete from sqlite_sequence where name = '" + TABLE_NAME + "'");
     }
 
     public List<Product> getAll() {

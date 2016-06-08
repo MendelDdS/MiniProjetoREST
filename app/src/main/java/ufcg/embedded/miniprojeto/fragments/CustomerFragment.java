@@ -25,6 +25,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ufcg.embedded.miniprojeto.R;
+import ufcg.embedded.miniprojeto.database.CustomerDB;
 import ufcg.embedded.miniprojeto.models.Customer;
 import ufcg.embedded.miniprojeto.toolbox.CustomersDeserialize;
 import ufcg.embedded.miniprojeto.toolbox.ShopService;
@@ -90,10 +91,15 @@ public class CustomerFragment extends Fragment {
                     Log.i("Erro2: ", String.valueOf(response.code()));
                 } else {
                     customers_list = response.body();
+                    CustomerDB customerDB = new CustomerDB(getContext());
+
+                    customerDB.deleteAll();
+
                     String[] names = new String[customers_list.size()];
 
                     for (int i = 0; i < customers_list.size(); i++) {
                         names[i] = customers_list.get(i).toString();
+                        customerDB.insert(customers_list.get(i));
                     }
 
                     listAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, names);

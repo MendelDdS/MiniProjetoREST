@@ -27,7 +27,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ufcg.embedded.miniprojeto.R;
 import ufcg.embedded.miniprojeto.models.Product;
-import ufcg.embedded.miniprojeto.toolbox.FruitDB;
+import ufcg.embedded.miniprojeto.database.ProductDB;
 import ufcg.embedded.miniprojeto.toolbox.ProductsDeserialize;
 import ufcg.embedded.miniprojeto.toolbox.ShopService;
 
@@ -76,9 +76,8 @@ public class ProductFragment extends Fragment {
         dialog.setContentView(R.layout.fruit_dialog);
         final TextView fruitName = (TextView) dialog.findViewById(R.id.fruitName);
         final TextView price = (TextView) dialog.findViewById(R.id.price);
-        FruitDB fruitDB = new FruitDB(getContext());
+        ProductDB fruitDB = new ProductDB(getContext());
 
-        Log.d("Error: ", fruitDB.getAll().get(position).getProduct_url());
         Call<Product> requestFruit = shopService.getFruit(fruitDB.getAll().get(position).getProduct_url());
 
         requestFruit.enqueue(new Callback<Product>() {
@@ -116,7 +115,7 @@ public class ProductFragment extends Fragment {
                 } else {
                     product_list = response.body();
                     String[] names = new String[product_list.size()];
-                    FruitDB fruitDB = new FruitDB(getContext());
+                    ProductDB fruitDB = new ProductDB(getContext());
 
                     fruitDB.deleteAll();
 

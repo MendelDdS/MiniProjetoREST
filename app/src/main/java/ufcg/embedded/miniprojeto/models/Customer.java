@@ -4,6 +4,7 @@ package ufcg.embedded.miniprojeto.models;
  * Created by treinamento-09 on 30/05/16.
  */
 public class Customer {
+    private int id;
     private String firstname;
     private String lastname;
     private String orders_url;
@@ -39,6 +40,14 @@ public class Customer {
 
     public void setCustomer_url(String customer_url) {
         this.customer_url = customer_url;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
