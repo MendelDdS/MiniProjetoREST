@@ -1,9 +1,11 @@
 package ufcg.embedded.miniprojeto.fragments;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,11 +71,24 @@ public class CustomerFragment extends Fragment {
         custList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                operCustomer(position);
+                openCustomer(position);
             }
         });
         return view;
     }
+
+    private void openCustomer(int position) {
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.root_frame, new CustomerInfoFragment());
+
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
+    }
+
+
 
     @Override
     public void onResume() {

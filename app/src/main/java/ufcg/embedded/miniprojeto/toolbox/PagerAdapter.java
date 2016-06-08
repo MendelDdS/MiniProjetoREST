@@ -10,6 +10,7 @@ import java.util.Map;
 
 import ufcg.embedded.miniprojeto.fragments.CustomerFragment;
 import ufcg.embedded.miniprojeto.fragments.ProductFragment;
+import ufcg.embedded.miniprojeto.fragments.RootFragment;
 
 /**
  * Created by treinamento-09 on 02/06/16.
@@ -32,7 +33,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 return new ProductFragment();
             case 1:
-                return new CustomerFragment();
+                return new RootFragment();
             default:
                 return null;
         }

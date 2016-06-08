@@ -58,8 +58,6 @@ public class ProductFragment extends Fragment {
                 .build();
         shopService = retrofit.create(ShopService.class);
 
-        showFruits();
-
         productsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -69,7 +67,11 @@ public class ProductFragment extends Fragment {
         return view;
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        showFruits();
+    }
 
     private void showOneFruit(int position) {
         final Dialog dialog = new Dialog(this.getContext());
@@ -99,10 +101,7 @@ public class ProductFragment extends Fragment {
         });
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
+
 
     private void showFruits() {
         Call<List<Product>> requestProducts = shopService.getProducts();
