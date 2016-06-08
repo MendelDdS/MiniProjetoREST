@@ -8,11 +8,9 @@ import android.view.ViewGroup;
 import java.util.HashMap;
 import java.util.Map;
 
-import ufcg.embedded.miniprojeto.fragments.RootFragment;
+import ufcg.embedded.miniprojeto.fragments.CustomerFragment;
+import ufcg.embedded.miniprojeto.fragments.CustomerInfoFragment;
 
-/**
- * Created by treinamento-09 on 02/06/16.
- */
 public class PagerAdapter extends FragmentStatePagerAdapter {
     private Map<Integer, String> mFragmentsTags;
     private FragmentManager mFragmentManager;
@@ -29,7 +27,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             default:
-                return new RootFragment();
+                return new CustomerFragment();
         }
     }
 
@@ -54,11 +52,4 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
         return obj;
     }
 
-    public Fragment getFragment(int position) {
-        String tag = mFragmentsTags.get(position);
-        if (tag == null) {
-            return null;
-        }
-        return mFragmentManager.findFragmentByTag(tag);
-    }
 }

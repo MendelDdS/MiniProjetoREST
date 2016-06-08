@@ -10,12 +10,9 @@ import java.util.List;
 
 import ufcg.embedded.miniprojeto.models.Customer;
 
-/**
- * Created by treinamento-09 on 08/06/16.
- */
 public class CustomerDB {
     private SQLiteDatabase dbLite;
-    private final static String TABLE_NAME = "customer";
+    private final static String TABLE_NAME = "CUSTOMERS";
 
     public CustomerDB(Context context) {
         DBCore dbCore = new DBCore(context);
@@ -35,22 +32,20 @@ public class CustomerDB {
         ContentValues values = new ContentValues();
         values.put("firstname", customer.getFirstname());
         values.put("lastname", customer.getLastname());
-
-        dbLite.update(TABLE_NAME, values, "_id = ?", new String[]{"" + customer.getId()});
+        dbLite.update(TABLE_NAME, values, "customer_url = " + customer.getCustomer_url(), null);
     }
 
     public void delete(Customer customer) {
-        dbLite.delete(TABLE_NAME, "_id = " + customer.getId(), null);
+        dbLite.delete(TABLE_NAME, "customer_url = " + customer.getCustomer_url(), null);
     }
 
     public void deleteAll() {
         dbLite.delete(TABLE_NAME, null, null);
-        dbLite.execSQL("delete from sqlite_sequence where name = '" + TABLE_NAME + "'");
     }
 
     public List<Customer> getAll() {
         List<Customer> customer_list = new ArrayList<Customer>();
-        String[] columns = new String[]{"_id", "firstname", "lastname", "customer_url"};
+        String[] columns = new String[]{"customer_url", "firstname", "lastname"};
         Cursor cursor = dbLite.query(TABLE_NAME, columns, null, null, null, null, null);
 
         if (cursor.getCount() > 0) {
@@ -58,10 +53,9 @@ public class CustomerDB {
 
             do {
                 Customer customer = new Customer();
-                customer.setId(cursor.getInt(0));
+                customer.setCustomer_url(cursor.getString(0));
                 customer.setFirstname(cursor.getString(1));
                 customer.setLastname(cursor.getString(2));
-                customer.setCustomer_url(cursor.getString(3));
                 customer_list.add(customer);
             } while (cursor.moveToNext());
         }

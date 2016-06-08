@@ -15,11 +15,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -31,27 +35,25 @@ import ufcg.embedded.miniprojeto.models.Customer;
 import ufcg.embedded.miniprojeto.toolbox.CustomersDeserialize;
 import ufcg.embedded.miniprojeto.toolbox.ShopService;
 
-/**
- * Created by treinamento-09 on 02/06/16.
- */
 public class CustomerFragment extends Fragment {
     private String BASE_URL = "https://api.predic8.de";
-    private ListView custList;
-    private EditText firstname, lastname;
+    private ListView lvCustomersList;
+    private EditText etCustomerFirstname, etCustomerLastname, etCustomerURL;
     private ListAdapter listAdapter;
-    private Button registerCust, finish;
+    private Button btCreateCustomer, btFinish;
     private Retrofit retrofit;
     private ShopService shopService;
-    private List<Customer> customers_list;
+    private List<Customer> listCustomers;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = (ViewGroup) inflater.inflate(R.layout.customer_layout, container, false);
-        custList = (ListView) view.findViewById(R.id.custList);
-        registerCust = (Button) view.findViewById(R.id.registerCust);
+        View view = inflater.inflate(R.layout.customer_layout, container, false);
+        lvCustomersList = (ListView) view.findViewById(R.id.custList);
+        btCreateCustomer = (Button) view.findViewById(R.id.registerCust);
 
-        Type type = new TypeToken<List<Customer>>(){}.getType();
+        Type type = new TypeToken<List<Customer>>() {
+        }.getType();
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(type, new CustomersDeserialize());
 
@@ -59,34 +61,33 @@ public class CustomerFragment extends Fragment {
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gsonBuilder.create()))
                 .build();
+
         shopService = retrofit.create(ShopService.class);
-        registerCust.setOnClickListener(new View.OnClickListener() {
+
+        btCreateCustomer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 registerCust();
             }
         });
 
-        custList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        lvCustomersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 openCustomer(position);
             }
         });
+
         return view;
     }
 
     private void openCustomer(int position) {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-
         transaction.replace(R.id.root_frame, new CustomerInfoFragment());
-
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         transaction.addToBackStack(null);
-
         transaction.commit();
     }
-
 
 
     @Override
@@ -102,24 +103,25 @@ public class CustomerFragment extends Fragment {
             @Override
             public void onResponse(Call<List<Customer>> call, Response<List<Customer>> response) {
                 if (!response.isSuccessful()) {
-                    Log.i("Erro2: ", String.valueOf(response.code()));
+                    Toast.makeText(getContext(), "Verifique sua conexão com a internet!", Toast.LENGTH_SHORT).show();
+                    Log.d("Erro2: ", String.valueOf(response.code()));
                 } else {
-                    customers_list = response.body();
-                    CustomerDB customerDB = new CustomerDB(getContext());
+                    listCustomers = response.body();
 
+                    CustomerDB customerDB = new CustomerDB(getContext());
                     customerDB.deleteAll();
 
-                    String[] names = new String[customers_list.size()];
+                    String[] names = new String[listCustomers.size()];
 
-                    for (int i = 0; i < customers_list.size(); i++) {
-                        names[i] = customers_list.get(i).toString();
-                        customerDB.insert(customers_list.get(i));
+                    for (int i = 0; i < listCustomers.size(); i++) {
+                        names[i] = listCustomers.get(i).toString();
+                        customerDB.insert(listCustomers.get(i));
                     }
 
-                    listAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, names);
-                    custList.setAdapter(listAdapter);
-                    }
+                    listAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, names);
+                    lvCustomersList.setAdapter(listAdapter);
                 }
+            }
 
             @Override
             public void onFailure(Call<List<Customer>> call, Throwable t) {
@@ -131,17 +133,17 @@ public class CustomerFragment extends Fragment {
     private void registerCust() {
         final Dialog dialog = new Dialog(this.getContext());
         dialog.setContentView(R.layout.register_customer_dialog);
-        firstname = (EditText) dialog.findViewById(R.id.name);
-        lastname = (EditText) dialog.findViewById(R.id.lastname);
-        finish = (Button) dialog.findViewById(R.id.finish);
+        etCustomerFirstname = (EditText) dialog.findViewById(R.id.name);
+        etCustomerLastname = (EditText) dialog.findViewById(R.id.lastname);
+        btFinish = (Button) dialog.findViewById(R.id.finish);
 
-        finish.setOnClickListener(new View.OnClickListener() {
+        btFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 if (!firstname.getText().toString().trim().equals("") && !lastname.getText().toString().trim().equals("")) {
+                if (!etCustomerFirstname.getText().toString().trim().equals("") && !etCustomerLastname.getText().toString().trim().equals("")) {
                     Customer customer = new Customer();
-                    customer.setFirstname(firstname.getText().toString());
-                    customer.setLastname(lastname.getText().toString());
+                    customer.setFirstname(etCustomerFirstname.getText().toString());
+                    customer.setLastname(etCustomerLastname.getText().toString());
                     Call<Customer> requestCustomer = shopService.createCustomer(customer);
 
                     requestCustomer.enqueue(new Callback<Customer>() {
