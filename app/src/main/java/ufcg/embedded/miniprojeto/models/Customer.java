@@ -40,4 +40,9 @@ public class Customer {
     public void setCustomer_url(String customer_url) {
         this.customer_url = customer_url;
     }
+
+    @Override
+    public String toString() {
+        return firstname.toString() + " " + lastname.toString();
+    }
 }

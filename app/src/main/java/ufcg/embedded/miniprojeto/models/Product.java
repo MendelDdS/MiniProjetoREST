@@ -58,4 +58,9 @@ public class Product {
     public void setCategory_url(String category_url) {
         this.category_url = category_url;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

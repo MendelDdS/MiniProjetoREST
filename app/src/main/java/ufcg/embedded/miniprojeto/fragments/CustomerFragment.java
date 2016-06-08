@@ -9,11 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.List;
 
 import retrofit2.Call;
@@ -23,6 +30,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ufcg.embedded.miniprojeto.R;
 import ufcg.embedded.miniprojeto.models.Customer;
+import ufcg.embedded.miniprojeto.toolbox.CustomersDeserialize;
 import ufcg.embedded.miniprojeto.toolbox.ListViewAdapter;
 import ufcg.embedded.miniprojeto.toolbox.ShopService;
 
@@ -33,7 +41,7 @@ public class CustomerFragment extends Fragment {
     private String BASE_URL = "https://api.predic8.de";
     private ListView custList;
     private EditText firstname, lastname;
-    private ListViewAdapter listAdapter;
+    private ListAdapter listAdapter;
     private Button registerCust, finish;
     private Retrofit retrofit;
     private ShopService shopService;
@@ -46,9 +54,13 @@ public class CustomerFragment extends Fragment {
         custList = (ListView) view.findViewById(R.id.custList);
         registerCust = (Button) view.findViewById(R.id.registerCust);
 
+        Type type = new TypeToken<List<Customer>>(){}.getType();
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(type, new CustomersDeserialize());
+
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gsonBuilder.create()))
                 .build();
         shopService = retrofit.create(ShopService.class);
         registerCust.setOnClickListener(new View.OnClickListener() {
@@ -79,23 +91,24 @@ public class CustomerFragment extends Fragment {
         requestProducts.enqueue(new Callback<List<Customer>>() {
             @Override
             public void onResponse(Call<List<Customer>> call, Response<List<Customer>> response) {
-                try {
-                    Log.d("TEST", response.errorBody().string());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
                 if (!response.isSuccessful()) {
-                    Log.i("Erro: ", String.valueOf(response.code()));
+                    Log.i("Erro2: ", String.valueOf(response.code()));
                 } else {
                     customers_list = response.body();
+                    String[] names = new String[customers_list.size()];
+
                     for (int i = 0; i < customers_list.size(); i++) {
-                        Log.d("TEST", customers_list.get(i).getCustomer_url());
+                        names[i] = customers_list.get(i).toString();
+                    }
+
+                    listAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, names);
+                    custList.setAdapter(listAdapter);
                     }
                 }
-            }
+
             @Override
             public void onFailure(Call<List<Customer>> call, Throwable t) {
-                Log.i("Error: ", t.getMessage());
+                Log.i("Error ", t.getMessage());
             }
         });
     }

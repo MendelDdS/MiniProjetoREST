@@ -9,9 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.List;
 
 import retrofit2.Call;
@@ -20,8 +26,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ufcg.embedded.miniprojeto.R;
+import ufcg.embedded.miniprojeto.models.Customer;
 import ufcg.embedded.miniprojeto.models.Product;
+import ufcg.embedded.miniprojeto.toolbox.CustomersDeserialize;
 import ufcg.embedded.miniprojeto.toolbox.ListViewAdapter;
+import ufcg.embedded.miniprojeto.toolbox.ProductsDeserialize;
 import ufcg.embedded.miniprojeto.toolbox.ShopService;
 
 /**
@@ -30,8 +39,9 @@ import ufcg.embedded.miniprojeto.toolbox.ShopService;
 public class ProductFragment extends Fragment {
     private String BASE_URL = "https://api.predic8.de";
     private Retrofit retrofit;
+    private List<Product> product_list;
     private ListView productsList;
-    private ListViewAdapter listAdapter;
+    private ListAdapter listAdapter;
     private ShopService shopService;
 
     @Nullable
@@ -40,9 +50,13 @@ public class ProductFragment extends Fragment {
         View view = (ViewGroup) inflater.inflate(R.layout.product_layout, container, false);
         productsList = (ListView) view.findViewById(R.id.fruitList);
 
+        Type type = new TypeToken<List<Product>>(){}.getType();
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(type, new ProductsDeserialize());
+
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gsonBuilder.create()))
                 .build();
         shopService = retrofit.create(ShopService.class);
 
@@ -65,7 +79,7 @@ public class ProductFragment extends Fragment {
         final TextView fruitName = (TextView) dialog.findViewById(R.id.fruitName);
         final TextView price = (TextView) dialog.findViewById(R.id.price);
 
-        Call<Product> requestFruit = shopService.getFruit(listAdapter.getItem(position).getValue());
+        Call<Product> requestFruit = shopService.getFruit("");
 
         requestFruit.enqueue(new Callback<Product>() {
             @Override
@@ -100,7 +114,15 @@ public class ProductFragment extends Fragment {
                 if (!response.isSuccessful()) {
                     Log.i("Erro: ", String.valueOf(response.code()));
                 } else {
+                    product_list = response.body();
+                    String[] names = new String[product_list.size()];
 
+                    for (int i = 0; i < product_list.size(); i++) {
+                        names[i] = product_list.get(i).toString();
+                    }
+
+                    listAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, names);
+                    productsList.setAdapter(listAdapter);
                 }
             }
             @Override
