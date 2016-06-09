@@ -36,19 +36,6 @@
         android:hint="Sobrenome"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Número da compra"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <EditText
-        android:id="@+id/et_create_order_url"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Número da compra"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
     <Button
         android:id="@+id/bt_save_create_customer"
         style="?android:attr/buttonStyleSmall"
