@@ -11,6 +11,8 @@
     <string name="lastname">Segundo Nome:</string>
     <string name="finish">Finalizar</string>
 
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
 
     <string-array name="titles">
         <item>Clientes</item>

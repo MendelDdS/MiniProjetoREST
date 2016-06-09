@@ -48,8 +48,8 @@ public class CustomerViewHolder extends RecyclerView.ViewHolder implements View.
 
         shopService = mRetrofit.create(ShopService.class);
 
-        Call<Customer> requestProducts = shopService.getCustomer(url);
-        requestProducts.enqueue(new Callback<Customer>() {
+        Call<Customer> requestCustomers = shopService.getCustomer(url);
+        requestCustomers.enqueue(new Callback<Customer>() {
             @Override
             public void onResponse(Call<Customer> call, Response<Customer> response) {
                 if (!response.isSuccessful()) {

@@ -2,7 +2,9 @@ package ufcg.embedded.miniprojeto.toolbox;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
@@ -21,13 +23,13 @@ public interface ShopService {
     Call<Customer> createCustomer(@Body Customer customer);
 
     @DELETE
-    Call<Customer> deleteCustomer(@Url String url);
+    Call<ResponseBody> deleteCustomer(@Url String url);
 
     @GET
     Call<Customer> getCustomer(@Url String url);
 
     @PATCH
-    Call<Customer> updateCustomer(@Url String url);
+    Call<Customer> updateCustomer(@Body Customer customer, @Url String url);
 
     @PUT
     Call<Customer> replaceCustomer(@Url String url);
