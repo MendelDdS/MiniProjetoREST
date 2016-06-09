@@ -10,43 +10,43 @@ public class Meta {
     private String page;
     private String next_url;
 
-    public String getLimit () {
+    public String getLimit() {
         return limit;
     }
 
-    public void setLimit (String limit) {
+    public void setLimit(String limit) {
         this.limit = limit;
     }
 
-    public String getCount () {
+    public String getCount() {
         return count;
     }
 
-    public void setCount (String count) {
+    public void setCount(String count) {
         this.count = count;
     }
 
-    public String getPrevious_url () {
+    public String getPrevious_url() {
         return previous_url;
     }
 
-    public void setPrevious_url (String previous_url) {
+    public void setPrevious_url(String previous_url) {
         this.previous_url = previous_url;
     }
 
-    public String getPage () {
+    public String getPage() {
         return page;
     }
 
-    public void setPage (String page) {
+    public void setPage(String page) {
         this.page = page;
     }
 
-    public String getNext_url () {
+    public String getNext_url() {
         return next_url;
     }
 
-    public void setNext_url (String next_url) {
+    public void setNext_url(String next_url) {
         this.next_url = next_url;
     }
 }

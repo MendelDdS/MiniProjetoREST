@@ -1,6 +1,8 @@
 package ufcg.embedded.miniprojeto.models;
 
-public class Customer {
+import java.io.Serializable;
+
+public class Customer implements Serializable {
     private String firstname;
     private String lastname;
     private String orders_url;
@@ -40,6 +42,6 @@ public class Customer {
 
     @Override
     public String toString() {
-        return firstname.toString() + " " + lastname.toString();
+        return firstname.toString() + " " + lastname.toString() + " " + orders_url + " " + customer_url;
     }
 }

@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">Mini Projeto REST</string>
     <string name="customers">Clientes</string>
-    <string name="registerCust">Registrar Cliente</string>
+    <string name="create_customer">Criar Cliente</string>
+    <string name="delete_customer">Apagar Cliente</string>
+    <string name="update_customer">Atualizar Cliente</string>
+    <string name="save_customer">Salvar</string>
+    <string name="cancel_customer">Cancelar</string>
 
     <string name="firstname">Primeiro Nome:</string>
     <string name="lastname">Segundo Nome:</string>

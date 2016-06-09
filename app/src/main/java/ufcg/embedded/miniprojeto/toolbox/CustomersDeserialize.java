@@ -1,7 +1,5 @@
 package ufcg.embedded.miniprojeto.toolbox;
 
-import android.util.Log;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -26,7 +24,7 @@ public class CustomersDeserialize implements JsonDeserializer<ArrayList<Customer
         JsonArray jsonArray = jsonObject.getAsJsonArray("customers");
 
 
-        for(JsonElement object: jsonArray) {
+        for (JsonElement object : jsonArray) {
             String firstname = object.getAsJsonObject().get("firstname").getAsString();
             String lastname = object.getAsJsonObject().get("lastname").getAsString();
             String customer_url = object.getAsJsonObject().get("customer_url").getAsString();
